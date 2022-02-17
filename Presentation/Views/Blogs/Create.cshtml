@@ -1,0 +1,51 @@
+﻿ 
+@{
+    ViewData["Title"] = "Create";
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Error
+    </div>
+}
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-primary" role="alert">
+        @ViewBag.Message
+    </div>
+}
+
+
+<h1>Create</h1>
+
+<form method="post" action="/Blogs/Create" enctype="multipart/form-data">
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td><input type="text" name="Name" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+            <td>Logo:</td>
+            <td><input type="file" name="logo" class="form-control" /> </td>
+        </tr>
+        <tr>
+            <td>Category:</td>
+            <td>
+                <select name="CategoryId" class="form-control">
+                    @foreach (var category in ViewBag.Categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="submit" value="Submit" /></td>
+        </tr>
+
+
+    </table>
+</form>
