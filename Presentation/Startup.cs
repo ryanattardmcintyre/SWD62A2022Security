@@ -40,10 +40,35 @@ namespace Presentation
               options.UseSqlServer(
                   Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            services.AddDefaultIdentity<CustomUser>(options => 
+            { 
+                options.SignIn.RequireConfirmedAccount = false;
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.AllowedForNewUsers = true;
+            })
                 .AddEntityFrameworkStores<BloggingContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            //builder.Services.Configure<IdentityOptions>(options =>
+            //{
+            //    // Default Lockout settings.
+            //    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            //    options.Lockout.MaxFailedAccessAttempts = 5;
+            //    options.Lockout.AllowedForNewUsers = true;
+            //});
+
+            services.AddAuthentication()
+                       .AddGoogle(options =>
+                       {
+                           IConfigurationSection googleAuthNSection =
+                               Configuration.GetSection("Authentication:Google");
+
+                           options.ClientId = googleAuthNSection["ClientId"];
+                           options.ClientSecret = googleAuthNSection["ClientSecret"];
+                       });
+
 
             //we are informing the injector class what must be initialized when it comes across
             //a request for example for IBlogsService, IBlogsRepository
