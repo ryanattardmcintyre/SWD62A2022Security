@@ -21,10 +21,13 @@
 <h1>Create</h1>
 
 <form method="post" action="/Blogs/Create" enctype="multipart/form-data">
+    
+    @Html.ValidationSummary()
     <table>
         <tr>
             <td>Name:</td>
-            <td><input type="text" name="Name" class="form-control" />
+            <td><input id="txtName" type="text" name="Name" class="form-control"   />
+
             </td>
         </tr>
         <tr>
@@ -49,3 +52,14 @@
 
     </table>
 </form>
+
+<script type="text/javascript">
+
+    function Validate() {
+        if (document.getElementById("txtName").innerText == "") {
+            alert("you cannot leave it blank");
+            return false;
+        }
+        else { return true;}
+    }
+</script>

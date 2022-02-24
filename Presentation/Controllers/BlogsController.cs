@@ -61,38 +61,59 @@ namespace Presentation.Controllers
         [HttpPost]
        
         public IActionResult Create(AddBlogViewModel model, IFormFile logo)
-        {
-            if (string.IsNullOrEmpty(model.Name))
-            {
-                var categories = categoriesService.GetCategories();
+        { var categories = categoriesService.GetCategories();
                 ViewBag.Categories = categories;
 
-                ViewBag.Error = "Name should not be left empty";
+            if (model.CategoryId < categories.ToList().OrderBy(x => x.Id).ElementAt(0).Id
+                ||
+                model.CategoryId > categories.ToList().OrderByDescending(x => x.Id).ElementAt(0).Id
+                )
+            {
+                ModelState.AddModelError("", "Category selected is not valid");
                 return View();
+            }
+            if (ModelState.IsValid )
+            {
+                     if (string.IsNullOrEmpty(model.Name))
+                                {
+                                   
+
+                                    ViewBag.Error = "Name should not be left empty";
+                                    return View();
+                                }
+                                else
+                                {
+                                    //start uploading the file
+                                    if (logo != null)
+                                    {
+                                        //1. to give the file a unique name
+                                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(logo.FileName);
+
+                                        //2. to read the absolute path where we are going to save the file
+                                        string absolutePath =  webHostEnvironment.WebRootPath+ "\\files\\"+ fileName;
+
+                                        //3. we save the physical file on the web server
+                                        using (FileStream fs = new FileStream(absolutePath, FileMode.CreateNew, FileAccess.Write ))
+                                        {
+                                            logo.CopyTo(fs);
+                                            fs.Close(); //flushes the data into the recipient file
+                                        }
+                                        model.LogoImagePath = @"\files\" + fileName;
+                                    }
+                                    blogsService.AddBlog(model);
+                                    ViewBag.Message = "Blog saved successfully";
+                
+                                }
             }
             else
             {
-                //start uploading the file
-                if (logo != null)
-                {
-                    //1. to give the file a unique name
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(logo.FileName);
+               
+                ModelState.AddModelError("", "some of your inputs are not acceptable. check again");
 
-                    //2. to read the absolute path where we are going to save the file
-                    string absolutePath =  webHostEnvironment.WebRootPath+ "\\files\\"+ fileName;
+                return View();
+             }
 
-                    //3. we save the physical file on the web server
-                    using (FileStream fs = new FileStream(absolutePath, FileMode.CreateNew, FileAccess.Write ))
-                    {
-                        logo.CopyTo(fs);
-                        fs.Close(); //flushes the data into the recipient file
-                    }
-                    model.LogoImagePath = @"\files\" + fileName;
-                }
-                blogsService.AddBlog(model);
-                ViewBag.Message = "Blog saved successfully";
-                
-            }
+
 
             return RedirectToAction("Create");
         }
