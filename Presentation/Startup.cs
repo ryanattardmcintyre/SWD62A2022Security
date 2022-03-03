@@ -17,6 +17,8 @@ using DataAccess.Repositories;
 using Application.Interfaces;
 using Application.Services;
 using Domain.Models;
+using System.IO;
+using Microsoft.Extensions.FileProviders;
 
 namespace Presentation
 {
@@ -109,7 +111,12 @@ namespace Presentation
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //Path.Combine(env.ContentRootPath, "Files")),
+            //    RequestPath = "/Files"
+            //}   );
             app.UseRouting();
 
             app.UseAuthentication();

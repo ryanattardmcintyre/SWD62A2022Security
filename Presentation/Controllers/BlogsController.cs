@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using Application.ViewModels;
@@ -100,7 +101,10 @@ namespace Presentation.Controllers
                                         }
                                         model.LogoImagePath = @"\files\" + fileName;
                                     }
-                                    blogsService.AddBlog(model);
+
+                    string anEncodedName = HtmlEncoder.Default.Encode(model.Name);
+                    model.Name = anEncodedName;
+                    blogsService.AddBlog(model);
                                     ViewBag.Message = "Blog saved successfully";
                 
                                 }
