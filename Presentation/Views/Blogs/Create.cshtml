@@ -21,7 +21,7 @@
 <h1>Create</h1>
 
 <form method="post" action="/Blogs/Create" enctype="multipart/form-data">
-    
+    @Html.AntiForgeryToken()
     @Html.ValidationSummary()
     <table>
         <tr>

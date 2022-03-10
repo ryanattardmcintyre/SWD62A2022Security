@@ -26,10 +26,13 @@ namespace Presentation.ActionFilters
             else
             {
                 //validate whether username is assocated with id
+                //assuming that in the db you have allocated permissons between users and files
+
+                //if(check is not ok) return new UnauthorizedResult();
             }
 
-            if (username != "ryanattard@gmail.com")
-                context.Result = new UnauthorizedResult();
+            //if (username != "ryanattard@gmail.com")
+            //    context.Result = new UnauthorizedResult();
                 //throw new UnauthorizedAccessException();
         }
         

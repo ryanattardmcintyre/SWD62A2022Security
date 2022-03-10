@@ -19,6 +19,7 @@ using Application.Services;
 using Domain.Models;
 using System.IO;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 
 namespace Presentation
 {
@@ -96,7 +97,7 @@ namespace Presentation
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,  ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -129,6 +130,8 @@ namespace Presentation
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
+            loggerFactory.AddFile("Logs/mylog-{Date}.txt");
         }
     }
 }
