@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Presentation.ActionFilters;
 using Presentation.Models;
+using Presentation.Utilities;
 
 namespace Presentation.Controllers
 {
@@ -24,6 +25,13 @@ namespace Presentation.Controllers
 
         public IActionResult Index()
         {
+            Cryptographic myEncryption = new Cryptographic();
+            //string cipher = myEncryption.SymmetricEncrypt("hello world");
+
+
+            var keys = myEncryption.GenerateAsymmetricKeys();
+             string cipher = myEncryption.AsymmetricEncrypt("aGVsbG8gd29ybGQ=", keys.PublicKey);
+
             return View();
         }
  
