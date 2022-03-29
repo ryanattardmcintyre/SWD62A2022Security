@@ -44,14 +44,16 @@ namespace Presentation.Utilities
 
             //2. decide on the name of the algorithm
             Rijndael myAlg = Rijndael.Create();
-            
+            myAlg.Padding = PaddingMode.PKCS7;
+            myAlg.Mode = CipherMode.
+
             //3. generate the secret key and the iv
             byte[] secretKey = GenerateKey();
             byte[] iv = GenerateIV();
 
             myAlg.Key = secretKey;
             myAlg.IV = iv;
-
+            
             //4. start the engine
             //4.1 byte[] >> Stream
             MemoryStream msIn = new MemoryStream(originalData);
@@ -150,6 +152,10 @@ namespace Presentation.Utilities
             return "";
         }
 
+
+        //1. Digital Signing is a mitigation against repudiation (when an attacker denies a malicious activity)
+        //2. You sign using the private key
+
         public string DigitalSigning(string data, string privateKey )
         {  
             RSA myAlg = RSACryptoServiceProvider.Create();
@@ -177,6 +183,7 @@ namespace Presentation.Utilities
             //2. when you have 100% certainty that data being handled is already base64 format you have to
             //   use Convert.ToBase64String / Convert.FromBase64String
             //note: every cryptographic algorithm outputs base64 format
+            //e.g. Md5 (weak & broken), Sha1 (weak & broken), Sha256, Sha512
 
             SHA512 myAlg = SHA512.Create();
             byte[] myData = Encoding.UTF32.GetBytes(originalText);
