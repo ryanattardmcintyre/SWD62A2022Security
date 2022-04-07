@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Presentation.Models;
+using Presentation.Utilities;
 
 namespace Presentation.Controllers
 {
@@ -117,8 +118,10 @@ namespace Presentation.Controllers
                             }
                         }
 
+                        Cryptographic myCryptographic = new Cryptographic();
+                        myCryptographic.HybridEncryption(logo.OpenReadStream(), )
 
-                        if(Path.GetExtension(logo.FileName) != ".jpg")
+                        if (Path.GetExtension(logo.FileName) != ".jpg")
                         {
                             throw new ArgumentException($"File type is not accepted, User file type was: {Path.GetExtension(logo.FileName)}");
                         }

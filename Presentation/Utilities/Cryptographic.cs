@@ -35,7 +35,6 @@ namespace Presentation.Utilities
             return iv;
         }
 
-
         public string SymmetricEncrypt(string input)
         {
             //1. string >> byte[]
@@ -73,7 +72,6 @@ namespace Presentation.Utilities
             return cipherString;
 
         }
-
         public string DecryptSymmetric(string cipher)
         {
             ////1. string >> byte[]
@@ -113,7 +111,6 @@ namespace Presentation.Utilities
             return "";
         }
 
-        
         public AsymmetricKeys GenerateAsymmetricKeys()
         {
             AsymmetricKeys keys = new AsymmetricKeys();
@@ -191,6 +188,65 @@ namespace Presentation.Utilities
 
             return Convert.ToBase64String(digest);
         }
+
+        public Stream HybridEncryption(Stream file, string publicKey)
+        {
+            file.Position = 0;
+
+            #region Symmetric part
+                Rijndael myAlg = Rijndael.Create();
+
+                myAlg.GenerateIV(); //16 bytes
+                myAlg.GenerateKey(); //32 bytes
+
+
+                CryptoStream cs = new CryptoStream(file, myAlg.CreateEncryptor(), CryptoStreamMode.Read);
+                MemoryStream cipher = new MemoryStream();
+                cs.CopyTo(cipher);
+                cs.Close();
+            #endregion
+
+            #region Asymmetric part
+             RSA myAsymAlg = RSACryptoServiceProvider.Create();
+            myAsymAlg.FromXmlString(publicKey);
+
+            byte[] encryptedSecretKey = myAsymAlg.Encrypt(myAlg.Key, RSAEncryptionPadding.Pkcs1);
+            byte[] encryptedIv = myAsymAlg.Encrypt(myAlg.IV, RSAEncryptionPadding.Pkcs1);
+
+            #endregion
+
+            #region Saving everything into a single file
+            MemoryStream outputFile = new MemoryStream();
+            outputFile.Write(encryptedSecretKey, 0, encryptedSecretKey.Length);
+            outputFile.Write(encryptedIv, 0, encryptedIv.Length);
+            cipher.Position = 0;
+            cipher.CopyTo(outputFile);
+            #endregion
+            return outputFile;
+        }
+        
+        public Stream HybridDecryption(Stream cipher, string privateKey)
+        {
+            cipher.Position = 0;
+            //reading the encrypted key and iv
+            byte[] encryptedKey = new byte[128];
+            cipher.Read(encryptedKey, 0, 128); //file pointer will move 128 positions
+
+
+            byte[] encryptedIv = new byte[128];
+            cipher.Read(encryptedIv, 0, 128); //file pointer will move ANOTHER 128 positions i.e. 255
+
+            MemoryStream encryptedFileContent = new MemoryStream();
+            cipher.CopyTo(encryptedFileContent); //file pointer will move to the eof reading what's left
+            encryptedFileContent.Position = 0;
+             
+            MemoryStream originalFileData = new MemoryStream();
+            //...missing code which you need to implement
+            //1. asymmetric decrypt the encrypted key and iv
+            //2. symmetrically decrypt the cipher
+            return originalFileData;
+        }
+
     }
 
     public class AsymmetricKeys
