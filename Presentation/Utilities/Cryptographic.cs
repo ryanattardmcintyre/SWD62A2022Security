@@ -44,7 +44,7 @@ namespace Presentation.Utilities
             //2. decide on the name of the algorithm
             Rijndael myAlg = Rijndael.Create();
             myAlg.Padding = PaddingMode.PKCS7;
-            myAlg.Mode = CipherMode.
+            myAlg.Mode = CipherMode.ECB;
 
             //3. generate the secret key and the iv
             byte[] secretKey = GenerateKey();

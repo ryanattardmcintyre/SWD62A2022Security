@@ -43,24 +43,25 @@ namespace Presentation
               options.UseSqlServer(
                   Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDefaultIdentity<CustomUser>(options => 
-            { 
+            services.AddIdentity<CustomUser, IdentityRole>(options =>
+            {
                 options.SignIn.RequireConfirmedAccount = false;
 
-                options.Lockout.MaxFailedAccessAttempts = 5;
+             /*   options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.AllowedForNewUsers = true;
-
+             */
 
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
                 options.Password.RequireNonAlphanumeric = true;
                 options.Password.RequiredLength = 7;
+            }).AddEntityFrameworkStores<BloggingContext>()
+               .AddDefaultUI()
+                 .AddDefaultTokenProviders();
+      
 
-
-            })
-                .AddEntityFrameworkStores<BloggingContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
 

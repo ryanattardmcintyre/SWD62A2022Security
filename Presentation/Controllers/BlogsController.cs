@@ -55,7 +55,8 @@ namespace Presentation.Controllers
         }
 
         //called before the Add Page is loaded/rendered
-        [HttpGet] 
+        [HttpGet]
+        [Authorize(Roles ="Admin")]
         public IActionResult Create()
         {
             var categories = categoriesService.GetCategories();
@@ -67,6 +68,7 @@ namespace Presentation.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken()]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create(AddBlogViewModel model, IFormFile logo)
         {
             try
@@ -118,8 +120,8 @@ namespace Presentation.Controllers
                             }
                         }
 
-                        Cryptographic myCryptographic = new Cryptographic();
-                        myCryptographic.HybridEncryption(logo.OpenReadStream(), )
+                      //  Cryptographic myCryptographic = new Cryptographic();
+                     //   myCryptographic.HybridEncryption(logo.OpenReadStream(), )
 
                         if (Path.GetExtension(logo.FileName) != ".jpg")
                         {
